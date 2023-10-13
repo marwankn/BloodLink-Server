@@ -4,16 +4,18 @@ const cors = require("cors");
 require("dotenv").config();
 const PORT = process.env.PORT || 8080;
 
+const authenticateToken = require("./middleware/authenticateToken");
 const usersRoutes = require("./routes/users");
 const profileRoutes = require("./routes/profile");
 const requestsRoutes = require("./routes/requests");
 
-app.use(express.json()); // Handles incoming JSON files
-app.use(cors()); // Enable Cross-Origin Resource Sharing
+app.use(express.json());
+app.use(cors());
 
 /////////////////////
 ///   ENDPOINTS   ///
 /////////////////////
+
 app.get("/", (_req, res) => res.status(200).send("TEST"));
 app.use("/users", usersRoutes);
 app.use("/profile", profileRoutes);
