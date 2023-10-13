@@ -4,7 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 const PORT = process.env.PORT || 8080;
 
-const authenticateToken = require("./middleware/authenticateToken");
+const authorizeToken = require("./middleware/authorizeToken");
 const usersRoutes = require("./routes/users");
 const profileRoutes = require("./routes/profile");
 const requestsRoutes = require("./routes/requests");
