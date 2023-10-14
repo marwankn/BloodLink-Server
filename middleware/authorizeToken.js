@@ -1,9 +1,10 @@
 const jwt = require("jsonwebtoken");
+const knex = require("knex")(require("../knexfile"));
 require("dotenv").config();
 
 function authorizeToken(req, res, next) {
   const token = req.headers.authorization.substring(7);
-  console.log(token);
+
   if (!token) {
     return res.status(401).json({ error: "Authentication required" });
   }
@@ -12,7 +13,20 @@ function authorizeToken(req, res, next) {
     if (err) {
       return res.status(403).json({ error: "Invalid token" });
     }
-    next();
+
+    knex("users")
+      .select("id")
+      .where("email", user.email)
+      .first()
+      .then((userId) => {
+        if (!userId) {
+          return res.status(403).json({ error: "User not found!" });
+        }
+
+        req.userId = userId.id;
+
+        next();
+      });
   });
 }
 
