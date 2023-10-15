@@ -16,10 +16,10 @@ app.use(cors());
 ///   ENDPOINTS   ///
 /////////////////////
 
-// app.get("/", authorizeToken, (_req, res) => res.status(200).send("TEST"));
+app.get("/", (_req, res) => res.status(200).send("TEST"));
 app.use("/users", usersRoutes);
 app.use("/profile", authorizeToken, profileRoutes);
-app.use("/requests", requestsRoutes);
+app.use("/requests", authorizeToken, requestsRoutes);
 
 // Run the server
 app.listen(PORT, () => {

@@ -17,8 +17,8 @@ exports.up = function (knex) {
     table.integer("donors_reponded");
     table.integer("donors_donated");
     table.string("address");
-    table.decimal(12, 9)("latitude");
-    table.decimal(12, 9)("longitude");
+    table.decimal("latitude", 12, 9);
+    table.decimal("longitude", 12, 9);
     table.timestamp("created_at").defaultTo(knex.fn.now());
   });
 };

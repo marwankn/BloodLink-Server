@@ -15,12 +15,14 @@ exports.up = function (knex) {
     table.string("last_name");
     table.integer("phone_number");
     table.string("address");
-    table.string("blood_type");
-    table.date("last_donation");
+    table.string("Sex").notNullable().checkIn(["m", "f"]);
+    table.string("blood_type").notNullable();
+    table.date("date_of_birth").notNullable();
+    table.date("last_donation").notNullable();
     table.integer("number_of_donations");
     table.float("travel_radius_for_donation");
-    table.decimal(12, 9)("latitude");
-    table.decimal(12, 9)("longitude");
+    table.decimal("latitude", 12, 9);
+    table.decimal("longitude", 12, 9);
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table
       .timestamp("updated_at")

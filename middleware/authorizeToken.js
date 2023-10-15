@@ -3,6 +3,10 @@ const knex = require("knex")(require("../knexfile"));
 require("dotenv").config();
 
 function authorizeToken(req, res, next) {
+  if (!req.headers.authorization) {
+    return res.status(401).json({ error: "Authentication required" });
+  }
+
   const token = req.headers.authorization.substring(7);
 
   if (!token) {
