@@ -34,25 +34,24 @@ const addRequest = async (req, res) => {
 
 const getRequests = async (req, res) => {
   const userId = req.userId;
-  console.log(userId);
+
   try {
-    console.log("1");
     const profileData = await knex("profile")
       .select(
         "latitude",
         "longitude",
         "travel_radius_for_donation",
         "blood_type",
-        // "sex",
+        "sex",
         "last_donation"
       )
       .where({ user_id: userId })
       .first();
-    console.log("2");
+
     if (!profileData) {
       return res.status(404).json({ error: "User profile not found" });
     }
-    console.log("3");
+
     const {
       latitude,
       longitude,
@@ -61,7 +60,6 @@ const getRequests = async (req, res) => {
       sex,
       last_donation,
     } = profileData;
-    console.log("4");
 
     // Calculate the days left for eligibility based on sex and last_donation date
     const today = new Date();
@@ -70,7 +68,7 @@ const getRequests = async (req, res) => {
     const eligibleDate = new Date(
       lastDonationDate.getTime() + daysBetweenDonations * 24 * 60 * 60 * 1000
     );
-    console.log("5");
+
     if (today < eligibleDate) {
       // User is not eligible to donate yet
       const daysLeft = Math.ceil(
@@ -80,14 +78,12 @@ const getRequests = async (req, res) => {
         message: `You're not eligible to donate again yet! Please come back in ${daysLeft} days.`,
       });
     }
-    console.log("6");
 
     // User is eligible to donate, proceed with finding donation requests
 
     const maxDistance = travel_radius_for_donation / 111.32;
 
     const compatibleBloodTypes = getCompatibleBloodTypes(blood_type);
-    console.log("7");
 
     const requests = await knex("requests")
       .select("*")
@@ -104,7 +100,6 @@ const getRequests = async (req, res) => {
           .whereIn("blood_type_needed", compatibleBloodTypes)
           .where("user_id", "!=", userId); // Exclude requests from the same user
       });
-    console.log("8");
 
     if (requests.length === 0) {
       return res.status(200).json({
@@ -112,7 +107,6 @@ const getRequests = async (req, res) => {
           "No donation requests were found. You can adjust the travel distance radius to check if there are other requests around you.",
       });
     }
-    console.log("9");
 
     return res.status(200).json({ requests });
   } catch (error) {

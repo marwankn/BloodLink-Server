@@ -4,7 +4,6 @@ const knex = require("knex")(require("../knexfile"));
 require("dotenv").config();
 
 const signUpUser = (req, res) => {
-  console.log("1");
   const { email, password } = req.body;
 
   knex("users")
@@ -40,7 +39,6 @@ const signUpUser = (req, res) => {
 };
 
 const loginUser = (req, res) => {
-  console.log("2");
   const { email, password } = req.body;
 
   knex("users")

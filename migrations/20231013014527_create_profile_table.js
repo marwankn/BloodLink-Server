@@ -15,9 +15,8 @@ exports.up = function (knex) {
     table.string("last_name");
     table.integer("phone_number");
     table.string("address");
-    table.string("Sex").notNullable().checkIn(["m", "f"]);
+    table.string("sex").notNullable().checkIn(["m", "f"]);
     table.string("blood_type").notNullable();
-    table.date("date_of_birth").notNullable();
     table.date("last_donation").notNullable();
     table.integer("number_of_donations");
     table.float("travel_radius_for_donation");

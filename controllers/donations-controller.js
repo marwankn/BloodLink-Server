@@ -6,6 +6,7 @@ const donorResponseAdd = async (req, res) => {
   const { buttonClicked } = req.body;
   const donorResponded = buttonClicked === "respond" ? 1 : 0;
   const donorDonated = buttonClicked === "confirm" ? 1 : 0;
+
   try {
     const response = await knex("donation_status").insert({
       request_id: requestId,
@@ -82,19 +83,16 @@ const donorDonated = async (req, res) => {
 const totalCount = async (req, res) => {
   try {
     const requestId = req.params.requestId;
-
-    const respondedCount = await knex("donation_status")
+    const respondedCountData = await knex("donation_status")
       .where({ request_id: requestId, donor_responded: 1 })
-      .count("id as count")
-      .first();
+      .count("id as count");
 
-    const donatedCount = await knex("donation_status")
+    const donatedCountData = await knex("donation_status")
       .where({ request_id: requestId, donor_donated: 1 })
-      .count("id as count")
-      .first();
+      .count("id as count");
 
-    const donorRespondedCount = respondedCount.count;
-    const donorDonatedCount = donatedCount.count;
+    const donorRespondedCount = respondedCountData[0].count;
+    const donorDonatedCount = donatedCountData[0].count;
 
     res.json({ donorRespondedCount, donorDonatedCount });
   } catch (error) {

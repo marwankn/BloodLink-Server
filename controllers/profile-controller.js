@@ -5,20 +5,13 @@ const getProfile = (req, res) => {
   const userId = req.userId;
 
   knex("profile")
-    .select(
-      "id",
-      "first_name",
-      "last_name",
-      "phone_number",
-      "address",
-      "blood_type",
-      "last_donation",
-      "travel_radius_for_donation"
-    )
+    .select()
     .where("user_id", userId)
     .first()
     .then((profile) => {
       if (profile) {
+        const date = new Date(profile.last_donation);
+        profile.last_donation = date.toISOString().split("T")[0];
         res.status(200).json(profile);
       } else {
         res.status(404).json({ error: "Profile not found" });
@@ -48,7 +41,7 @@ const addProfile = async (req, res) => {
 
     profileData.latitude = coordinates.lat;
     profileData.longitude = coordinates.lng;
-
+    profileData.number_of_donations = 0;
     knex("profile")
       .insert(profileData)
       .then((success) => {
@@ -63,27 +56,22 @@ const editProfile = async (req, res) => {
   const userId = req.userId;
   const profileData = req.body;
   const address = profileData.address;
-  console.log("1");
 
   try {
     const currentProfile = await knex("profile")
       .where("user_id", userId)
       .first();
 
-    console.log("2");
-
     if (currentProfile.address !== address) {
       const coordinates = await getCoordinatesFromAddress(address);
       profileData.latitude = coordinates.lat;
       profileData.longitude = coordinates.lng;
-      console.log("3");
     }
-    console.log("4");
+
     knex("profile")
       .where("user_id", userId)
       .update(profileData)
       .then((data) => console.log(data));
-    console.log("5");
 
     return res.status(200).json({ message: "Profile updated successfully" });
   } catch (error) {
