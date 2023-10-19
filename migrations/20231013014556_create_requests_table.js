@@ -14,9 +14,11 @@ exports.up = function (knex) {
     table.string("patient_name");
     table.string("blood_type_needed");
     table.integer("number_of_donors_needed");
+    table.integer("donors_reponded");
+    table.integer("donors_donated");
     table.string("address");
-    table.float("latitude");
-    table.float("longitude");
+    table.decimal("latitude", 12, 9);
+    table.decimal("longitude", 12, 9);
     table.timestamp("created_at").defaultTo(knex.fn.now());
   });
 };
