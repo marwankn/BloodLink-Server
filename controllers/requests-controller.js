@@ -98,7 +98,7 @@ const getRequests = async (req, res) => {
             longitude + maxDistance,
           ])
           .whereIn("blood_type_needed", compatibleBloodTypes)
-          .where("user_id", "!=", userId); // Exclude requests from the same user
+          .where("user_id", "!=", userId);
       });
 
     if (requests.length === 0) {
@@ -114,7 +114,59 @@ const getRequests = async (req, res) => {
   }
 };
 
+const getCount = async (req, res) => {
+  const userId = req.userId;
+  const { requestId } = req.params;
+
+  try {
+    const respondedCount = await knex("donation_status")
+      .count("*", { as: "count" })
+      .where({
+        request_id: requestId,
+        donor_responded: 1,
+      });
+
+    const donatedCount = await knex("donation_status")
+      .count("*", { as: "count" })
+      .where({
+        request_id: requestId,
+        donor_donated: 1,
+      });
+
+    const userResponded = await knex("donation_status")
+      .select("*")
+      .where({
+        request_id: requestId,
+        user_id: userId,
+        donor_responded: 1,
+      })
+      .first();
+    const responded = !!userResponded;
+
+    const userDonated = await knex("donation_status")
+      .select("*")
+      .where({
+        request_id: requestId,
+        user_id: userId,
+        donor_donated: 1,
+      })
+      .first();
+    const donated = !!userDonated;
+
+    const count = {
+      donor_responded: respondedCount[0].count,
+      donor_donated: donatedCount[0].count,
+      responded,
+      donated,
+    };
+
+    return res.status(200).send(count);
+  } catch (error) {
+    return res.status();
+  }
+};
 module.exports = {
   addRequest,
   getRequests,
+  getCount,
 };

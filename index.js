@@ -17,7 +17,6 @@ app.use(cors());
 ///   ENDPOINTS   ///
 /////////////////////
 
-app.get("/", (_req, res) => res.status(200).send("TEST"));
 app.use("/users", usersRoutes);
 app.use("/profile", authorizeToken, profileRoutes);
 app.use("/requests", authorizeToken, requestsRoutes);
