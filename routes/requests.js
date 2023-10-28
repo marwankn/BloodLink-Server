@@ -5,4 +5,6 @@ router
   .route("/")
   .get(requestsController.getRequests)
   .post(requestsController.addRequest);
+
+router.route("/:requestId").get(requestsController.getCount);
 module.exports = router;
